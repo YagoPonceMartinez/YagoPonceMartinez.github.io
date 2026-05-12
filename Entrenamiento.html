@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Entrenamiento Mayo · Junio</title>
+<style>
+  :root {
+    --verde: #1D9E75;
+    --verdeClaro: #E1F5EE;
+    --morado: #534AB7;
+    --moradoClaro: #EEEDFE;
+    --coral: #993C1D;
+    --coralClaro: #FAECE7;
+    --amber: #854F0B;
+    --amberClaro: #FAEEDA;
+    --azul: #185FA5;
+    --azulClaro: #E6F1FB;
+    --gris: #888780;
+    --grisClaro: #F5F4EF;
+    --negro: #1A1A18;
+    --blanco: #FFFFFF;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #F5F4EF; color: var(--negro); font-size: 15px; padding-bottom: 40px; }
+
+  /* NAV */
+  .nav { position: sticky; top: 0; z-index: 100; background: var(--negro); padding: 12px 16px 0; overflow-x: auto; display: flex; gap: 6px; white-space: nowrap; scrollbar-width: none; }
+  .nav::-webkit-scrollbar { display: none; }
+  .nav-btn { padding: 8px 14px; border-radius: 20px 20px 0 0; border: none; font-size: 12px; font-weight: 600; cursor: pointer; color: #aaa; background: transparent; transition: all .2s; flex-shrink: 0; }
+  .nav-btn.active { background: var(--blanco); color: var(--negro); }
+
+  /* PANELS */
+  .panel { display: none; padding: 16px; }
+  .panel.active { display: block; }
+
+  /* CARDS */
+  .card { background: var(--blanco); border-radius: 14px; margin-bottom: 12px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,.06); }
+  .card-head { display: flex; align-items: center; gap: 10px; padding: 14px; cursor: pointer; }
+  .card-head:active { background: var(--grisClaro); }
+  .badge { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 20px; flex-shrink: 0; letter-spacing: .03em; }
+  .card-title { font-size: 14px; font-weight: 600; flex: 1; }
+  .card-meta { font-size: 11px; color: var(--gris); flex-shrink: 0; }
+  .chevron { font-size: 12px; color: var(--gris); transition: transform .2s; flex-shrink: 0; }
+  .card-body { display: none; border-top: 1px solid #f0ede8; }
+  .card-body.open { display: block; }
+
+  /* EJERCICIO ROWS */
+  .ex-list { padding: 4px 0; }
+  .ex-item { padding: 10px 14px; border-bottom: 1px solid #f5f4ef; }
+  .ex-item:last-child { border-bottom: none; }
+  .ex-name { font-size: 13px; font-weight: 600; color: var(--negro); margin-bottom: 4px; }
+  .ex-params { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 4px; }
+  .tag { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 10px; }
+  .ex-note { font-size: 11px; color: var(--gris); line-height: 1.45; }
+
+  /* INFO BOXES */
+  .info-box { border-radius: 10px; padding: 11px 13px; margin-bottom: 12px; font-size: 12px; line-height: 1.55; }
+  .info-box.amber { background: var(--amberClaro); border-left: 3px solid #EF9F27; color: #633806; }
+  .info-box.verde { background: var(--verdeClaro); border-left: 3px solid var(--verde); color: #085041; }
+  .info-box.coral { background: var(--coralClaro); border-left: 3px solid var(--coral); color: #712B13; }
+  .info-box.morado { background: var(--moradoClaro); border-left: 3px solid var(--morado); color: #3C3489; }
+
+  /* SECTION HEADERS */
+  .sec-header { border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; }
+  .sec-header h3 { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+  .sec-header p { font-size: 11px; opacity: .8; }
+
+  /* SEMANA TABLE */
+  .week-table { width: 100%; border-collapse: collapse; font-size: 12px; margin-bottom: 12px; }
+  .week-table th { background: var(--negro); color: var(--blanco); padding: 8px 10px; text-align: left; font-size: 11px; }
+  .week-table td { padding: 8px 10px; border-bottom: 1px solid #eee; vertical-align: top; }
+  .week-table tr:nth-child(even) td { background: var(--grisClaro); }
+  .day-label { font-weight: 700; color: var(--negro); white-space: nowrap; }
+  .session-label { color: var(--gris); font-size: 11px; margin-top: 2px; }
+
+  /* RULES */
+  .rules-list { list-style: none; padding: 0; }
+  .rules-list li { padding: 9px 0; border-bottom: 1px solid #eee; font-size: 12px; line-height: 1.45; display: flex; gap: 8px; align-items: flex-start; }
+  .rules-list li:last-child { border-bottom: none; }
+  .rules-list li::before { content: "—"; color: var(--verde); font-weight: 700; flex-shrink: 0; }
+
+  /* PAGE TITLE */
+  .page-title { background: var(--negro); color: var(--blanco); padding: 20px 16px 14px; }
+  .page-title h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  .page-title p { font-size: 12px; color: #aaa; }
+
+  /* PROG TAGS */
+  .prog { display: flex; gap: 5px; flex-wrap: wrap; padding: 8px 14px 10px; }
+  .prog span { font-size: 10px; padding: 3px 8px; border-radius: 10px; background: var(--grisClaro); color: #555; }
+  .prog span strong { color: var(--negro); }
+
+  /* CARDIO */
+  .cardio-item { padding: 12px 14px; border-bottom: 1px solid #f5f4ef; }
+  .cardio-item:last-child { border-bottom: none; }
+  .cardio-title { font-size: 13px; font-weight: 600; margin-bottom: 3px; }
+  .cardio-desc { font-size: 11px; color: var(--gris); line-height: 1.45; }
+</style>
+</head>
+<body>
+
+<div class="page-title">
+  <h1>Training Camp</h1>
+  <p>Mayo · Junio 2025 &nbsp;·&nbsp; Dr. Aldo + Boxing Science + Peat</p>
+</div>
+
+<div class="nav" id="nav">
+  <button class="nav-btn active" onclick="sw('semana')">Semana</button>
+  <button class="nav-btn" onclick="sw('dia1')">Día 1 · Upper</button>
+  <button class="nav-btn" onclick="sw('dia2')">Día 2 · Lower</button>
+  <button class="nav-btn" onclick="sw('dia3')">Día 3 · Hiper Upper</button>
+  <button class="nav-btn" onclick="sw('dia4')">Día 4 · Hiper Lower</button>
+  <button class="nav-btn" onclick="sw('cardio')">Cardio</button>
+  <button class="nav-btn" onclick="sw('reglas')">Reglas</button>
+</div>
+
+<!-- ═══ SEMANA ═══ -->
+<div class="panel active" id="p-semana">
+  <div class="info-box amber">4 días de fuerza · Exámenes en mayo · Training camp en junio. El orden de los días es flexible según disponibilidad, pero respeta siempre al menos 1 día entre sesiones del mismo tipo.</div>
+
+  <div class="card">
+    <div class="card-head" onclick="tog(this)">
+      <span class="badge" style="background:#1a1a18;color:#fff">REF</span>
+      <span class="card-title">Distribución semanal</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-body">
+      <table class="week-table">
+        <tr><th>Día</th><th>Sesión</th></tr>
+        <tr><td><span class="day-label">Lunes</span></td><td>Día 1 — Upper Fuerza<div class="session-label">PAP · Landmine · Press · Dominadas</div></td></tr>
+        <tr><td><span class="day-label">Martes</span></td><td>Día 2 — Lower Fuerza<div class="session-label">PAP · Sentadilla · Deadlift · Cadena post.</div></td></tr>
+        <tr><td><span class="day-label">Miércoles</span></td><td>Paseo + movilidad<div class="session-label">30-40 min · Z2 natural</div></td></tr>
+        <tr><td><span class="day-label">Jueves</span></td><td>Día 3 — Upper Hipertrofia<div class="session-label">Tempo 3s · Volumen · Físico</div></td></tr>
+        <tr><td><span class="day-label">Viernes</span></td><td>Paseo + movilidad / Boxeo si hay<div class="session-label">Flexible según disponibilidad</div></td></tr>
+        <tr><td><span class="day-label">Sábado</span></td><td>Día 4 — Lower Hipertrofia<div class="session-label">Tempo 3s · Hip thrust · Bulgarian</div></td></tr>
+        <tr><td><span class="day-label">Domingo</span></td><td>Monte + Sauna<div class="session-label">Recuperación activa · Z2 natural</div></td></tr>
+      </table>
+      <div class="info-box verde" style="margin:0 14px 14px">Whoop verde → entrena al 100%. Amarillo → normal. Rojo → reduce volumen 40% o solo movilidad.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head" onclick="tog(this)">
+      <span class="badge" style="background:#854F0B;color:#fff">ALDO</span>
+      <span class="card-title">Tabla de programación élite</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="ex-list">
+        <div class="ex-item">
+          <div class="ex-name">👑 Press Landmine — REY</div>
+          <div class="ex-params"><span class="tag" style="background:#FAEEDA;color:#633806">80-85% 1RM</span><span class="tag" style="background:#FAEEDA;color:#633806">RPE 9</span><span class="tag" style="background:#FAEEDA;color:#633806">3-5 × 3-5</span></div>
+          <div class="ex-note">Máxima transferencia al combate. Cadena cinética completa del golpe. Va primero siempre.</div>
+        </div>
+        <div class="ex-item">
+          <div class="ex-name">Dominadas — ÉLITE</div>
+          <div class="ex-params"><span class="tag" style="background:#EEEDFE;color:#3C3489">Con lastre</span><span class="tag" style="background:#EEEDFE;color:#3C3489">RPE 8-9</span><span class="tag" style="background:#EEEDFE;color:#3C3489">3-4 × 5-8</span></div>
+          <div class="ex-note">Agarre neutro. Motor del clinch y retorno del jab.</div>
+        </div>
+        <div class="ex-item">
+          <div class="ex-name">Press Militar — SÓLIDO</div>
+          <div class="ex-params"><span class="tag" style="background:#E1F5EE;color:#085041">75-85% 1RM</span><span class="tag" style="background:#E1F5EE;color:#085041">RPE 8</span><span class="tag" style="background:#E1F5EE;color:#085041">3-5 × 5-8</span></div>
+          <div class="ex-note">Hombro fuerte = golpe estable. Codos adelante.</div>
+        </div>
+        <div class="ex-item">
+          <div class="ex-name">Rotación Polea/Banda — ESPECÍFICO</div>
+          <div class="ex-params"><span class="tag" style="background:#E6F1FB;color:#185FA5">Carga media</span><span class="tag" style="background:#E6F1FB;color:#185FA5">Vel. máx.</span><span class="tag" style="background:#E6F1FB;color:#185FA5">3 × 8-10</span></div>
+          <div class="ex-note">Potencia rotacional pura. Velocidad máxima en cada rep. El gancho en el gimnasio.</div>
+        </div>
+        <div class="ex-item">
+          <div class="ex-name">Press Inclinado — ESTÉTICO</div>
+          <div class="ex-params"><span class="tag" style="background:#F5F4EF;color:#444">RPE 8-9</span><span class="tag" style="background:#F5F4EF;color:#444">3-4 × 10-12</span></div>
+          <div class="ex-note">Físico compacto. Tempo 3s. En días de hipertrofia.</div>
+        </div>
+        <div class="ex-item">
+          <div class="ex-name">Tríceps Polea — COMPLEMENTARIO</div>
+          <div class="ex-params"><span class="tag" style="background:#F5F4EF;color:#444">RPE 7-8</span><span class="tag" style="background:#F5F4EF;color:#444">3 × 12-15</span></div>
+          <div class="ex-note">Al final de la sesión. Último en prioridad, primero en eliminarse si hay poco tiempo.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ DÍA 1 ═══ -->
+<div class="panel" id="p-dia1">
+  <div class="info-box amber">Upper Fuerza · ~55-60 min · Landmine como protagonista · PAP activo · Lunes preferiblemente con SNC fresco</div>
+
+  <!-- Calentamiento -->
+  <div class="sec-header" style="background:#1a1a18;color:#fff">
+    <h3>○ Calentamiento — 10 min</h3>
+  </div>
+  <div class="card">
+    <div class="ex-list">
+      <div class="ex-item"><div class="ex-name">Rotaciones hombro con banda</div><div class="ex-params"><span class="tag" style="background:#F5F4EF;color:#444">10 reps c/lado</span></div><div class="ex-note">Lento y controlado. Libera el hombro antes de cargar.</div></div>
+      <div class="ex-item"><div class="ex-name">Foam roller torácico</div><div class="ex-params"><span class="tag" style="background:#F5F4EF;color:#444">10 pases lentos</span></div><div class="ex-note">2-3 segundos en cada punto tenso.</div></div>
+      <div class="ex-item"><div class="ex-name">World's greatest stretch</div><div class="ex-params"><span class="tag" style="background:#F5F4EF;color:#444">5 reps c/lado</span></div><div class="ex-note">Cadera + torácica + hombro. El más completo.</div></div>
+    </div>
+  </div>
+
+  <!-- Power Circuit -->
+  <div class="sec-header" style="background:var(--amberClaro);color:#633806">
+    <h3>01 · Power Circuit Neural — 10 min</h3>
+    <p>60s descanso · Calidad máxima, no fatiga</p>
+  </div>
+  <div class="card">
+    <div class="ex-list">
+      <div class="ex-item"><div class="ex-name">Pogo jumps</div><div class="ex-params"><span class="tag" style="background:#FAEEDA;color:#633806">3×12</span><span class="tag" style="background:#FAEEDA;color:#633806">60s</span></div><div class="ex-note">Pequeños y rápidos. Mínimo contacto con el suelo.</div></div>
+      <div class="ex-item"><div class="ex-name">Altitude landing (banco)</div><div class="ex-params"><span class="tag" style="background:#FAEEDA;color:#633806">3×5</span><span class="tag" style="background:#FAEEDA;color:#633806">60s</span></div><div class="ex-note">Cae, absorbe, para completamente. Sin rebote.</div></div>
+      <div class="ex-item"><div class="ex-name">MB punch throw 3kg</div><div class="ex-params"><span class="tag" style="background:#FAEEDA;color:#633806">3×5 c/lado</span><span class="tag" style="background:#FAEEDA;color:#633806">60s</span></div><div class="ex-note">Máxima intención. Rotación desde la cadera.</div></div>
+    </div>
+  </div>
+
+  <!-- PAP Landmine -->
+  <div class="sec-header" style="background:var(--amberClaro);color:#633806">
+    <h3>02 · Press Landmine — REY 👑</h3>
+    <p>Ejercicio principal · RPE 9 · PAP con rotación banda</p>
+  </div>
+  <div class="info-box amber">CRONÓMETRO. 3-4 min exactos entre el landmine pesado y la rotación explosiva.</div>
+  <div class="card">
+    <div class="ex-list">
+      <div class="ex-item">
+        <div class="ex-name">Press Landmine pesado</div>
+        <div class="ex-params"><span class="tag" style="background:#FAEEDA;color:#633806">4×3-5</span><span class="tag" style="background:#FAEEDA;color:#633806">80-85% 1RM</span><span class="tag" style="background:#FAEEDA;color:#633806">RPE 9</span></div>
+        <div class="ex-note">Rotación desde la cadera. La fuerza sale del pie, no del brazo. Intención explosiva en la subida.</div>
+      </div>
+      <div class="ex-item" style="background:#FAEEDA">
+        <div class="ex-name">— PAUSA PAP: 3-4 min —</div>
+        <div class="ex-note">Respira. No te sientes. No cojas el móvil.</div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-name">Rotación banda/polea a velocidad máxima</div>
+        <div class="ex-params"><span class="tag" style="background:#FAEEDA;color:#633806">3×8-10 c/lado</span><span class="tag" style="background:#FAEEDA;color:#633806">Vel. máx.</span><span class="tag" style="background:#FAEEDA;color:#633806">90s</span></div>
+        <div class="ex-note">Banda anclada al rack. Carga media. Velocidad máxima en cada rep. Es la potencia rotacional del gancho.</div>
+      </div>
+    </div>
+    <div class="prog"><span><strong>F1:</strong> 4×5 · 80%</span><span><strong>F2:</strong> 4×4 · 83%</span><span><strong>F3:</strong> 4×3-4 · 85%</span></div>
+  </div>
+
+  <!-- PAP Press Militar -->
+  <div class="sec-header" style="background:var(--moradoClaro);color:#3C3489">
+    <h3>03 · PAP Empuje — Press Militar</h3>
+    <p>3-4 min entre pesado y explosivo</p>
+  </div>
+  <div class="card">
+    <div class="ex-list">
+      <div class="ex-item">
+        <div class="ex-name">Press Militar con barra</div>
+        <div class="ex-params"><span class="tag" style="background:#EEEDFE;color:#3C3489">4×4-5</span><span class="tag" style="background:#EEEDFE;color:#3C3489">75-82% 1RM</span><span class="tag" style="background:#EEEDFE;color:#3C3489">RPE 8</span></div>
+        <div class="ex-note">Codos adelante del cuerpo. Baja 2-3s controlado. Sube con toda la intención.</div>
+      </div>
+      <div class="ex-item" style="background:#EEEDFE">
+        <div class="ex-name">— PAUSA PAP: 3-4 min —</div>
+        <div class="ex-note">Cronómetro. No negociable.</div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-name">Flexión de potencia / MB chest pass</div>
+        <div class="ex-params"><span class="tag" style="background:#EEEDFE;color:#3C3489">4×4</span><span class="tag" style="background:#EEEDFE;color:#3C3489">Vel. máx.</span><span class="tag" style="background:#EEEDFE;color:#3C3489">2 min</span></div>
+        <div class="ex-note">Manos despegan del suelo o lanza el balón. Aprovecha el PAP del press.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAP Tracción -->
+  <div class="sec-header" style="background:var(--coralClaro);color:#712B13">
+    <h3>04 · PAP Tracción — Dominadas</h3>
+    <p>Élite tier · Lastre · Agarre neutro</p>
+  </div>
+  <div class="card">
+    <div class="ex-list">
+      <div class="ex-item">
+        <div class="ex-name">Dominadas agarre neutro + lastre</div>
+        <div class="ex-params"><span class="tag" style="background:#FAECE7;color:#712B13">4×5-6</span><span class="tag" style="background:#FAECE7;color:#712B13">+10-15kg</span><span class="tag" style="background:#FAECE7;color:#712B13">RPE 8-9</span></div>
+        <div class="ex-note">Palmas mirándose. Baja 2-3s completo. Sin balanceo. Lastre en cinturón o mochila.</div>
+      </div>
+      <div class="ex-item" style="background:#FAECE7">
+        <div class="ex-name">— PAUSA PAP: 3-4 min —</div>
+        <div class="ex-note">Misma lógica. No la acortes.</div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-name">Band pull-apart explosivo</div>
+        <div class="ex-params"><span class="tag" style="background:#FAECE7;color:#712B13">4×8</span><span class="tag" style="background:#FAECE7;color:#712B13">Vel. máx.</span><span class="tag" style="background:#FAECE7;color:#712B13">2 min</span></div>
+        <div class="ex-note">Velocidad máxima en la apertura. Hombro posterior. Previene lesión de manguito.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Funcional + Core -->
+  <div class="sec-header" style="background:var(--verdeClaro);color:#085041">
+    <h3>05 · Funcional + Core</h3>
+    <p>90s descanso funcional · 45s core</p>
+  </div>
+  <div class="card">
+    <div class="ex-list">
+      <div class="ex-item"><div class="ex-name">Farmer's carry</div><div class="ex-params"><span class="tag" style="background:#E1F5EE;color:#085041">3×40m</span><span class="tag" style="background:#E1F5EE;color:#085041">90s</span></div><div class="ex-note">Si puedes hablar fluido, pesa poco. Postura perfecta los 40m.</div></div>
+      <div class="ex-item"><div class="ex-name">Pallof press con banda</div><div class="ex-params"><span class="tag" style="background:#E1F5EE;color:#085041">3×8 c/lado</span><span class="tag" style="background:#E1F5EE;color:#085041">45s</span></div><div class="ex-note">Resiste el giro. El más específico del combate.</div></div>
+      <div class="ex-item"><div class="ex-name">Dead bug</div><div class="ex-params"><span class="tag" style="background:#E1F5EE;color:#085041">3×10</span><span class="tag" style="background:#E1F5EE;color:#085041">45s</span></div><div class="ex-note">Espalda baja pegada al suelo siempre. Si se despega: reduce el rango.</div></div>
+    </div>
+  </div>
+
+  <!-- Movilidad -->
+  <div class="sec-header" style="background:var(--azulClaro);color:#185FA5">
+    <h3>○ Movilidad Post — 10 min</h3>
+  </div>
+  <div class="card">
+    <div class="ex-list">
+      <div class="ex-item"><div class="ex-name">Sleeper stretch</div><div class="ex-params"><span class="tag" style="background:#E6F1FB;color:#185FA5">90s c/hombro</span></div><div class="ex-note">Hombro posterior. Obligatorio tras dominadas y press.</div></div>
+      <div class="ex-item"><div class="ex-name">Doorway pectoral</div><div class="ex-params"><span class="tag" style="background:#E6F1FB;color:#185FA5">60s</span></div><div class="ex-note">Pectoral y hombro anterior tras el press.</div></div>
+      <div class="ex-item"><div class="ex-name">Dead hang</div><div class="ex-params"><span class="tag" style="background:#E6F1FB;color:#185FA5">2×30-45s</span></div><div class="ex-note">Descomprime columna. Grip de bonus.</div></div>
+      <div class="ex-item"><div class="ex-name">PNF isquios</div><div class="ex-params"><span class="tag" style="background:#E6F1FB;color:#185FA5">3×10s c/pierna</span></div><div class="ex-note">Contrae 10s, relaja, profundiza. El más efectivo.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ DÍA 2 ═══ -->
+<div class="panel" id="p-dia2">
+  <div class="info-box amber">Lower Fuerza · ~55-60 min · Sentadilla frontal + cadena posterior · PAP activo</div>
+
+  <div class="sec-header" style="background:#1a1a18;color:#fff"><h3>○ Calentamiento — 10 min</h3></div>
+  <div class="card">
+    <div class="ex-list">
+      <div class="ex-item"><div class="ex-name">Hip 90/90 con rotaciones activas</div><div class="ex-params"><span class="tag" style="background:#F5F4EF;color:#444">60s c/lado</span></div><div class="ex-note">La posición más importante para el atleta de combate.</div></div>
+      <div class="ex-item"><div class="ex-name">Clamshell con banda</div><div class="ex-params"><span class="tag" style="background:#F5F4EF;color:#444">15 reps c/lado</span></div><div class="ex-note">Activa el glúteo medio antes de la sentadilla.</div></div>
+      <div class="ex-item"><div class="ex-name">Goblet squat con balón 5kg</div><div class="ex-params"><span class="tag" style="background:#F5F4EF;color:#444">10 reps · 3s bajada</span></div><div class="ex-note">Aprende el patrón antes de poner la barra.</div></div>
+    </div>
+  </div>
+
+  <div class="sec-header" style="background:var(--amberClaro);color:#633806"><h3>01 · Power Circuit — 10 min · 60-90s descanso</h3></div>
+  <div class="card">
+    <div class="ex-list">
+      <div class="ex-item"><div class="ex-name">Box jump (banco)</div><div class="ex-params"><span class="tag" style="background:#FAEEDA;color:#633806">4×5</span><span class="tag" style="background:#FAEEDA;color:#633806">60-90s</span></div><div class="ex-note">Explosión máxima, no rebotes. Reset completo entre reps.</div></div>
+      <div class="ex-item"><div class="ex-name">Ice skaters laterales</div><div class="ex-params"><span class="tag" style="background:#FAEEDA;color:#633806">3×8 c/lado</span><span class="tag" style="background:#FAEEDA;color:#633806">60s</span></div><div class="ex-note">Aterriza y aguanta 1s. Potencia lateral del footwork.</div></div>
+      <div class="ex-item"><div class="ex-name">Falling CMJ</div><div class="ex-params"><span class="tag" style="background:#FAEEDA;color:#633806">3×4</span><span class="tag" style="background:#FAEEDA;color:#633806">90s</span></div><div class="ex-note">Inclínate hasta casi caer, explota hacia arriba. Patrón del derribo.</div></div>
+    </div>
+  </div>
+
+  <div class="sec-header" style="background:var(--moradoClaro);color:#3C3489"><h3>02 · PAP Sentadilla Frontal</h3><p>La sentadilla del luchador · 3-4 min entre pesado y explosivo</p></div>
+  <div class="info-box morado">Codos arriba, espalda recta, core activo. Si los codos bajan: para. La sentadilla frontal reproduce la postura del doble derribo.</div>
+  <div class="card">
+    <div class="ex-list">
+      <div class="ex-item">
+        <div class="ex-name">Sentadilla frontal (rack)</div>
+        <div class="ex-params"><span class="tag" style="background:#EEEDFE;color:#3C3489">4×3-5</span><span class="tag" style="background:#EEEDFE;color:#3C3489">80-87% 1RM</span></div>
+        <div class="ex-note">Intención explosiva en la subida aunque vaya lento.</div>
+      </div>
+      <div class="ex-item" style="background:#EEEDFE"><div class="ex-name">— PAUSA PAP: 3-4 min —</div><div class="ex-note">Cronómetro. Inamovible.</div></div>
+      <div class="ex-item">
+        <div class="ex-name">Jump squat</div>
+        <div class="ex-params"><span class="tag" style="background:#EEEDFE;color:#3C3489">4×4</span><span class="tag" style="background:#EEEDFE;color:#3C3489">0-20kg máx.</span><span class="tag" style="background:#EEEDFE;color:#3C3489">2 min</span></div>
+        <div class="ex-note">Velocidad de salida máxima. El peso es lo de menos.</div>
+      </div>
+    </div>
+    <div class="prog"><span><strong>F1:</strong> 3×8 · 65-75%</span><span><strong>F2:</strong> 4×5 · 80-83%</span><span><strong>F3:</strong> 4×3-4 · 85-87%</span></div>
+  </div>
+
+  <div class="sec-header" style="background:var(--coralClaro);color:#712B13"><h3>03 · PAP Cadena Posterior</h3><p>Motor del golpe y el derribo · 3 min entre ejercicios</p></div>
+  <div class="card">
+    <div class="ex-list">
+      <div class="ex-item">
+        <div class="ex-name">Peso muerto / RDL / Trap bar</div>
+        <div class="ex-params"><span class="tag" style="background:#FAECE7;color:#712B13">4×4-5</span><span class="tag" style="background:#FAECE7;color:#712B13">80-85% 1RM</span></div>
+        <div class="ex-note">Bisagra de cadera. Espalda neutra. Caderas y hombros suben a la vez.</div>
+      </div>
+      <div class="ex-item" style="background:#FAECE7"><div class="ex-name">— PAUSA: 3 min —</div></div>
+      <div class="ex-item">
+        <div class="ex-name">KB swing americano / RDL explosivo</div>
+        <div class="ex-params"><span class="tag" style="background:#FAECE7;color:#712B13">4×8</span><span class="tag" style="background:#FAECE7;color:#712B13">2 min</span></div>
+        <div class="ex-note">Caderas empujan, brazos acompañan. La extensión de cadera del cross y el derribo.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-header" style="background:var(--verdeClaro);color:#085041"><h3>04 · Unilateral + Core</h3><p>90s descanso unilateral · 45s core</p></div>
+  <div class="card">
+    <div class="ex-list">
+      <div class="ex-item"><div class="ex-name">Bulgarian split squat (banco)</div><div class="ex-params"><span class="tag" style="background:#E1F5EE;color:#085041">3×6 c/pierna</span><span class="tag" style="background:#E1F5EE;color:#085041">90s</span></div><div class="ex-note">Postura de guardia exacta. Baja 2s, sube explosivo.</div></div>
+      <div class="ex-item"><div class="ex-name">Step-up explosivo con mancuerna</div><div class="ex-params"><span class="tag" style="background:#E1F5EE;color:#085041">3×6 c/pierna</span><span class="tag" style="background:#E1F5EE;color:#085041">90s</span></div><div class="ex-note">Patrón del paso de entrada al jab y al derribo.</div></div>
+      <div class="ex-item"><div class="ex-name">Suitcase deadlift</div><div class="ex-params"><span class="tag" style="background:#E1F5EE;color:#085041">3×6 c/lado</span><span class="tag" style="background:#E1F5EE;color:#085041">45s</span></div><div class="ex-note">Anti-flexión lateral. El core del golpe.</div></div>
+      <div class="ex-item"><div class="ex-name">MB slam explosivo 5kg</div><div class="ex-params"><span class="tag" style="background:#E1F5EE;color:#085041">3×8</span><span class="tag" style="background:#E1F5EE;color:#085041">45s</span></div><div class="ex-note">Core explosivo puro. Velocidad máxima.</div></div>
+    </div>
+  </div>
+
+  <div class="sec-header" style="background:var(--azulClaro);color:#185FA5"><h3>○ Movilidad Post — 15 min</h3></div>
+  <div class="card">
+    <div class="ex-list">
+      <div class="ex-item"><div class="ex-name">Pigeon pose</div><div class="ex-params"><span class="tag" style="background:#E6F1FB;color:#185FA5">90s c/lado</span></div><div class="ex-note">Sin prisa. La más importante tras BJJ y lower.</div></div>
+      <div class="ex-item"><div class="ex-name">Couch stretch</div><div class="ex-params"><span class="tag" style="background:#E6F1FB;color:#185FA5">90s c/pierna</span></div><div class="ex-note">Flexores de cadera. Tras sentadilla y Bulgarian.</div></div>
+      <div class="ex-item"><div class="ex-name">PNF isquios</div><div class="ex-params"><span class="tag" style="background:#E6F1FB;color:#185FA5">3×10s c/pierna</span></div><div class="ex-note">Contrae 10s, relaja, profundiza.</div></div>
+      <div class="ex-item"><div class="ex-name">Movilidad tobillo con banda</div><div class="ex-params"><span class="tag" style="background:#E6F1FB;color:#185FA5">2 min c/pie</span></div><div class="ex-note">Mejora la postura en sentadilla frontal.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ DÍA 3 ═══ -->
+<div class="panel" id="p-dia3">
+  <div class="info-box amber">Upper Hipertrofia · ~55 min · TEMPO 3s en todos los excéntricos · 60-90s descanso · Físico compacto</div>
+  <div class="info-box coral">El tempo de 3s en la bajada es inamovible. 10kg con 3s de excéntrico se sienten como 20kg normales. Empieza más ligero de lo que crees.</div>
+
+  <div class="sec-header" style="background:#1a1a18;color:#fff"><h3>○ Calentamiento — 8 min</h3></div>
+  <div class="card">
+    <div class="ex-list">
+      <div class="ex-item"><div class="ex-name">Rotaciones hombro con banda</div><div class="ex-params"><span class="tag" style="background:#F5F4EF;color:#444">15 reps c/lado</span></div><div class="ex-note">Más volumen que el Día 1. Hay más trabajo de aislamiento.</div></div>
+      <div class="ex-item"><div class="ex-name">Band pull-apart suave</div><div class="ex-params"><span class="tag" style="background:#F5F4EF;color:#444">20 reps</span></div><div class="ex-note">Activa hombro posterior antes de los press.</div></div>
+    </div>
+  </div>
+
+  <div class="sec-header" style="background:var(--amberClaro);color:#633806"><h3>01 · Landmine técnico + Press Inclinado</h3><p>Tempo 3s · RPE 8-9 · 60-90s descanso</p></div>
+  <div class="card">
+    <div class="ex-list">
+      <div class="ex-item"><div class="ex-name">Press Landmine técnico</div><div class="ex-params"><span class="tag" style="background:#FAEEDA;color:#633806">3×8</span><span class="tag" style="background:#FAEEDA;color:#633806">RPE 7-8</span><span class="tag" style="background:#FAEEDA;color:#633806">90s</span></div><div class="ex-note">Velocidad media. Refuerza el patrón técnico sin el RPE 9 del Día 1.</div></div>
+      <div class="ex-item"><div class="ex-name">Press inclinado con mancuernas (30°)</div><div class="ex-params"><span class="tag" style="background:#FAEEDA;color:#633806">4×10-12</span><span class="tag" style="background:#FAEEDA;color:#633806">Tempo 3s</span><span class="tag" style="background:#FAEEDA;color:#633806">RPE 8-9</span><span class="tag" style="background:#FAEEDA;color:#633806">60-90s</span></div><div class="ex-note">Bajada 3s hasta tocar el pecho. Subida explosiva. Rango completo.</div></div>
+      <div class="ex-item"><div class="ex-name">Fondos en paralelas / banco</div><div class="ex-params"><span class="tag" style="background:#FAEEDA;color:#633806">3×10-12</span><span class="tag" style="background:#FAEEDA;color:#633806">Tempo 3s</span><span class="tag" style="background:#FAEEDA;color:#633806">60s</span></div><div class="ex-note">Excéntrico 3s bajando. Pausa 1s en el fondo.</div></div>
+      <div class="ex-item"><div class="ex-name">Tríceps polea/banda (COMPLEMENTARIO)</div><div class="ex-params"><span class="tag" style="background:#FAEEDA;color:#633806">3×12-15</span><span class="tag" style="background:#FAEEDA;color:#633806">RPE 7-8</span><span class="tag" style="background:#FAEEDA;color:#633806">45s</span></div><div class="ex-note">Codo fijo. Solo se mueve el antebrazo. Eliminar primero si hay poco tiempo.</div></div>
+    </div>
+  </div>
+
+  <div class="sec-header" style="background:var(--coralClaro);color:#712B13"><h3>02 · Tracción hipertrofia · Tempo 3s · 60-90s</h3></div>
+  <div class="card">
+    <div class="ex-list">
+      <div class="ex-item"><div class="ex-name">Remo con mancuerna unilateral</div><div class="ex-params"><span class="tag" style="background:#FAECE7;color:#712B13">4×10-12</span><span class="tag" style="background:#FAECE7;color:#712B13">Tempo 3s</span><span class="tag" style="background:#FAECE7;color:#712B13">60-90s</span></div><div class="ex-note">Codo pegado al cuerpo, tira hacia la cadera. Excéntrico 3s bajando.</div></div>
+      <div class="ex-item"><div class="ex-name">Jalón al pecho con banda (rack)</div><div class="ex-params"><span class="tag" style="background:#FAECE7;color:#712B13">3×12</span><span class="tag" style="background:#FAECE7;color:#712B13">Tempo 3s</span><span class="tag" style="background:#FAECE7;color:#712B13">60s</span></div><div class="ex-note">Agarre neutro si puedes. Lleva los codos hacia las caderas.</div></div>
+      <div class="ex-item"><div class="ex-name">Face pull con banda</div><div class="ex-params"><span class="tag" style="background:#FAECE7;color:#712B13">3×15</span><span class="tag" style="background:#FAECE7;color:#712B13">45s</span></div><div class="ex-note">Banda a la altura de la cara. Tira hacia la nariz. Hombro posterior y manguito.</div></div>
+      <div class="ex-item"><div class="ex-name">Curl de bíceps con mancuernas</div><div class="ex-params"><span class="tag" style="background:#FAECE7;color:#712B13">3×12</span><span class="tag" style="background:#FAECE7;color:#712B13">Tempo 3s</span><span class="tag" style="background:#FAECE7;color:#712B13">45s</span></div><div class="ex-note">Supinación completa. Codos fijos pegados al cuerpo.</div></div>
+    </div>
+  </div>
+
+  <div class="sec-header" style="background:var(--verdeClaro);color:#085041"><h3>03 · Core · 45s descanso</h3></div>
+  <div class="card">
+    <div class="ex-list">
+      <div class="ex-item"><div class="ex-name">Pallof press con pausa 3s</div><div class="ex-params"><span class="tag" style="background:#E1F5EE;color:#085041">3×8 c/lado</span><span class="tag" style="background:#E1F5EE;color:#085041">45s</span></div><div class="ex-note">Extiende brazos y aguanta 3s antes de volver. Más tensión anti-rotacional.</div></div>
+      <div class="ex-item"><div class="ex-name">Plank con peso en la espalda</div><div class="ex-params"><span class="tag" style="background:#E1F5EE;color:#085041">3×30-40s</span><span class="tag" style="background:#E1F5EE;color:#085041">45s</span></div><div class="ex-note">Disco de 10kg en la espalda. Cadera ni arriba ni abajo.</div></div>
+    </div>
+  </div>
+
+  <div class="sec-header" style="background:var(--azulClaro);color:#185FA5"><h3>○ Movilidad Post — 10 min</h3></div>
+  <div class="card">
+    <div class="ex-list">
+      <div class="ex-item"><div class="ex-name">Sleeper stretch</div><div class="ex-params"><span class="tag" style="background:#E6F1FB;color:#185FA5">90s c/hombro</span></div><div class="ex-note">Obligatorio tras el volumen de tracción.</div></div>
+      <div class="ex-item"><div class="ex-name">Doorway pectoral</div><div class="ex-params"><span class="tag" style="background:#E6F1FB;color:#185FA5">60s</span></div><div class="ex-note">Tras todo el trabajo de empuje.</div></div>
+      <div class="ex-item"><div class="ex-name">Dead hang</div><div class="ex-params"><span class="tag" style="background:#E6F1FB;color:#185FA5">2×30-45s</span></div><div class="ex-note">Descomprime la columna. Cierre de sesión.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ DÍA 4 ═══ -->
+<div class="panel" id="p-dia4">
+  <div class="info-box amber">Lower Hipertrofia · ~55 min · TEMPO 3s · Hip thrust protagonista · La sesión que más cambia el físico visualmente</div>
+
+  <div class="sec-header" style="background:#1a1a18;color:#fff"><h3>○ Calentamiento — 10 min</h3></div>
+  <div class="card">
+    <div class="ex-list">
+      <div class="ex-item"><div class="ex-name">Hip 90/90 con rotaciones activas</div><div class="ex-params"><span class="tag" style="background:#F5F4EF;color:#444">60s c/lado</span></div></div>
+      <div class="ex-item"><div class="ex-name">Clamshell con banda</div><div class="ex-params"><span class="tag" style="background:#F5F4EF;color:#444">20 reps c/lado</span></div><div class="ex-note">Si no sientes el glúteo aquí, no lo sentirás con carga.</div></div>
+      <div class="ex-item"><div class="ex-name">Puente de glúteos sin carga</div><div class="ex-params"><span class="tag" style="background:#F5F4EF;color:#444">20 reps · aprieta 2s arriba</span></div><div class="ex-note">Aprende a activar el glúteo antes del hip thrust.</div></div>
+    </div>
+  </div>
+
+  <div class="sec-header" style="background:var(--coralClaro);color:#712B13"><h3>01 · Glúteo y Cadena Posterior · Tempo 3s · 60-90s</h3></div>
+  <div class="info-box coral">Hip thrust: espalda en banco a la altura de los omóplatos, barra sobre las caderas con almohadilla, empuja desde los talones, aprieta el glúteo 1s arriba. NO arquees la lumbar.</div>
+  <div class="card">
+    <div class="ex-list">
+      <div class="ex-item"><div class="ex-name">Hip thrust con barra (banco)</div><div class="ex-params"><span class="tag" style="background:#FAECE7;color:#712B13">4×10-12</span><span class="tag" style="background:#FAECE7;color:#712B13">Tempo 3s</span><span class="tag" style="background:#FAECE7;color:#712B13">60-90s</span></div><div class="ex-note">REY de esta sesión. Glúteo apretado 1s arriba. El glúteo empuja, no la espalda.</div></div>
+      <div class="ex-item"><div class="ex-name">RDL peso muerto rumano</div><div class="ex-params"><span class="tag" style="background:#FAECE7;color:#712B13">4×10-12</span><span class="tag" style="background:#FAECE7;color:#712B13">Tempo 3s</span><span class="tag" style="background:#FAECE7;color:#712B13">60-90s</span></div><div class="ex-note">Siente el estiramiento de isquios en la bajada. No llegues al suelo.</div></div>
+      <div class="ex-item"><div class="ex-name">Curl de isquios con banda</div><div class="ex-params"><span class="tag" style="background:#FAECE7;color:#712B13">3×12-15</span><span class="tag" style="background:#FAECE7;color:#712B13">Tempo 3s</span><span class="tag" style="background:#FAECE7;color:#712B13">60s</span></div><div class="ex-note">Banda anclada al rack. Tumbado, curla hacia los glúteos.</div></div>
+    </div>
+  </div>
+
+  <div class="sec-header" style="background:var(--amberClaro);color:#633806"><h3>02 · Cuádriceps Unilateral · Tempo 3s · 60-90s</h3></div>
+  <div class="card">
+    <div class="ex-list">
+      <div class="ex-item"><div class="ex-name">Bulgarian split squat con mancuernas</div><div class="ex-params"><span class="tag" style="background:#FAEEDA;color:#633806">4×10 c/pierna</span><span class="tag" style="background:#FAEEDA;color:#633806">Tempo 3s</span><span class="tag" style="background:#FAEEDA;color:#633806">60-90s</span></div><div class="ex-note">El mejor ejercicio unilateral para el combate. Reproduce la guardia. Baja 3s, sube explosivo.</div></div>
+      <div class="ex-item"><div class="ex-name">Step-up con mancuernas (banco alto)</div><div class="ex-params"><span class="tag" style="background:#FAEEDA;color:#633806">3×10 c/pierna</span><span class="tag" style="background:#FAEEDA;color:#633806">Tempo 3s</span><span class="tag" style="background:#FAEEDA;color:#633806">60s</span></div><div class="ex-note">La pierna de arriba hace todo el trabajo. No te impulses con la de abajo.</div></div>
+      <div class="ex-item"><div class="ex-name">Sentadilla goblet</div><div class="ex-params"><span class="tag" style="background:#FAEEDA;color:#633806">3×12-15</span><span class="tag" style="background:#FAEEDA;color:#633806">Tempo 3s</span><span class="tag" style="background:#FAEEDA;color:#633806">60s</span></div><div class="ex-note">Pausa 2s en el fondo. Cuádriceps bajo tensión prolongada.</div></div>
+    </div>
+  </div>
+
+  <div class="sec-header" style="background:var(--verdeClaro);color:#085041"><h3>03 · Pantorrilla + Core · 45s descanso</h3></div>
+  <div class="card">
+    <div class="ex-list">
+      <div class="ex-item"><div class="ex-name">Elevación de talones (escalón)</div><div class="ex-params"><span class="tag" style="background:#E1F5EE;color:#085041">3×20</span><span class="tag" style="background:#E1F5EE;color:#085041">Tempo 3s</span><span class="tag" style="background:#E1F5EE;color:#085041">45s</span></div><div class="ex-note">Rango completo. Baja hasta el estiramiento máximo.</div></div>
+      <div class="ex-item"><div class="ex-name">Suitcase deadlift</div><div class="ex-params"><span class="tag" style="background:#E1F5EE;color:#085041">3×8 c/lado</span><span class="tag" style="background:#E1F5EE;color:#085041">45s</span></div><div class="ex-note">Anti-flexión lateral. El core del golpe lateral.</div></div>
+      <div class="ex-item"><div class="ex-name">MB slam rotacional 5kg</div><div class="ex-params"><span class="tag" style="background:#E1F5EE;color:#085041">3×10</span><span class="tag" style="background:#E1F5EE;color:#085041">45s</span></div><div class="ex-note">Core explosivo de cierre. Patrón del gancho descendente. Máxima velocidad.</div></div>
+    </div>
+  </div>
+
+  <div class="sec-header" style="background:var(--azulClaro);color:#185FA5"><h3>○ Movilidad Post — 15 min</h3></div>
+  <div class="card">
+    <div class="ex-list">
+      <div class="ex-item"><div class="ex-name">Pigeon pose</div><div class="ex-params"><span class="tag" style="background:#E6F1FB;color:#185FA5">90s c/lado</span></div><div class="ex-note">La más importante tras hip thrust y Bulgarian.</div></div>
+      <div class="ex-item"><div class="ex-name">Couch stretch</div><div class="ex-params"><span class="tag" style="background:#E6F1FB;color:#185FA5">90s c/pierna</span></div></div>
+      <div class="ex-item"><div class="ex-name">PNF isquios</div><div class="ex-params"><span class="tag" style="background:#E6F1FB;color:#185FA5">3×10s c/pierna</span></div></div>
+      <div class="ex-item"><div class="ex-name">Rotación torácica sentado</div><div class="ex-params"><span class="tag" style="background:#E6F1FB;color:#185FA5">10 reps c/lado</span></div><div class="ex-note">Cierre de semana. Columna libre para el lunes.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ CARDIO ═══ -->
+<div class="panel" id="p-cardio">
+  <div class="info-box verde">Durante los exámenes el cardio complementa el estudio, no compite con él. Volumen bajo, tipo correcto. En junio puedes subir la intensidad cuando la carga cognitiva baje.</div>
+
+  <div class="card">
+    <div class="card-head" onclick="tog(this)">
+      <span class="badge" style="background:#1D9E75;color:#fff">Z2</span>
+      <span class="card-title">Paseos diarios — Inamovible</span>
+      <span class="card-meta">30-45 min</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="cardio-item">
+        <div class="cardio-title">Cuándo</div>
+        <div class="cardio-desc">Después de comer o entre bloques de estudio. Es el mejor momento: consolida lo estudiado, baja el cortisol y activa el metabolismo para la tarde.</div>
+      </div>
+      <div class="cardio-item">
+        <div class="cardio-title">Cómo</div>
+        <div class="cardio-desc">Ritmo de conversación (130-145 ppm). Sin podcast, sin música si puedes. Respiración nasal. Al aire libre siempre que sea posible. En Valencia en mayo: sol + naturaleza + Z2 es el trío Peatiano perfecto.</div>
+      </div>
+      <div class="cardio-item">
+        <div class="cardio-title">Por qué no puedes saltártelo</div>
+        <div class="cardio-desc">El movimiento post-comida produce BDNF que mejora la retención de lo estudiado esa tarde. No es descanso, es parte del proceso de aprendizaje.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head" onclick="tog(this)">
+      <span class="badge" style="background:#185FA5;color:#fff">POOL</span>
+      <span class="card-title">Natación intervalos — 1×semana</span>
+      <span class="card-meta">35-40 min</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="cardio-item">
+        <div class="cardio-title">Cuándo</div>
+        <div class="cardio-desc">Domingo preferiblemente. Sin examen al día siguiente y con el cuerpo fresco del día de monte.</div>
+      </div>
+      <div class="cardio-item">
+        <div class="cardio-title">Protocolo</div>
+        <div class="cardio-desc">200m suaves de calentamiento → 8-10 × 25m a máxima intensidad con 40s de pausa completa entre cada uno → 100m suaves de vuelta a la calma.</div>
+      </div>
+      <div class="cardio-item">
+        <div class="cardio-title">Por qué este formato</div>
+        <div class="cardio-desc">Aláctico puro. El mismo sistema energético del golpe. Sin acumulación de lactato. Sin fatiga que interfiera con el estudio del día siguiente. Sin impacto articular.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head" onclick="tog(this)">
+      <span class="badge" style="background:#533000;color:#fff">MONTE</span>
+      <span class="card-title">Monte — Fin de semana</span>
+      <span class="card-meta">60-90 min</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="cardio-item">
+        <div class="cardio-title">Cuándo</div>
+        <div class="cardio-desc">Domingo mañana. El día más parasimpático de la semana.</div>
+      </div>
+      <div class="cardio-item">
+        <div class="cardio-title">Qué aporta</div>
+        <div class="cardio-desc">Z2 natural + vitamina D3 + cortisol -12% + propiocepción en terreno irregular + recuperación del SNC sin pantallas. Todo en un solo bloque de 60-90 minutos. Sin protocolo, solo caminar.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head" onclick="tog(this)">
+      <span class="badge" style="background:#712B13;color:#fff">SAUNA</span>
+      <span class="card-title">Sauna / Baño turco — Protocolo</span>
+      <span class="card-meta">Sábado o domingo</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-body">
+      <div class="cardio-item"><div class="cardio-title">Pre — 30 min antes</div><div class="cardio-desc">500ml agua + pizca de sal + cucharada de miel. Inamovible.</div></div>
+      <div class="cardio-item"><div class="cardio-title">Dentro</div><div class="cardio-desc">15-20 min a 80-90°C. Sal si FC mayor de 160 ppm o mareo.</div></div>
+      <div class="cardio-item"><div class="cardio-title">Entre rondas</div><div class="cardio-desc">Aguas frías / pediluvio. 200ml agua. 2-3 rondas máximo.</div></div>
+      <div class="cardio-item"><div class="cardio-title">Post</div><div class="cardio-desc">Zumo de naranja + leche + comida con patata. Mínimo 2h antes de dormir.</div></div>
+      <div class="cardio-item"><div class="cardio-title">Nunca</div><div class="cardio-desc">Post-fuerza el mismo día. Whoop rojo. Déficit calórico marcado.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ REGLAS ═══ -->
+<div class="panel" id="p-reglas">
+  <div class="info-box coral">Estas reglas no son sugerencias. Son las que determinan si el entrenamiento funciona o no.</div>
+
+  <div class="card">
+    <div class="card-head" onclick="tog(this)">
+      <span class="badge" style="background:#854F0B;color:#fff">PAP</span>
+      <span class="card-title">Reglas del PAP</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-body">
+      <ul class="rules-list" style="padding:8px 14px 12px">
+        <li>Pausa de 3-4 min entre pesado y explosivo. Cronómetro siempre.</li>
+        <li>Menos de 2 min: la fatiga enmascara el efecto. Más de 8 min: el efecto se diluye.</li>
+        <li>Sin móvil durante la pausa. Respira, hidratate, visualiza la siguiente serie.</li>
+        <li>El pesado va primero. El explosivo después. El orden es inamovible.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head" onclick="tog(this)">
+      <span class="badge" style="background:#534AB7;color:#fff">SNC</span>
+      <span class="card-title">Reglas del sistema nervioso</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-body">
+      <ul class="rules-list" style="padding:8px 14px 12px">
+        <li>Sin móvil entre series. La activación neural baja 8-12% con 30s de pantalla.</li>
+        <li>2-3 RIR siempre en compuestos. Sin fallo muscular habitual.</li>
+        <li>Máximo 65 minutos de sesión. Después el cortisol sube y la testosterona baja.</li>
+        <li>Si la técnica falla: el peso es demasiado alto. Bájalo sin ego.</li>
+        <li>Excéntrico siempre 2-3s controlado. Concéntrico siempre con intención explosiva.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head" onclick="tog(this)">
+      <span class="badge" style="background:#1D9E75;color:#fff">NUT</span>
+      <span class="card-title">Nutrición Peatiana — Inamovibles</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-body">
+      <ul class="rules-list" style="padding:8px 14px 12px">
+        <li>Sol primeros 10-15 min del día. Antes del desayuno. Sin cristal.</li>
+        <li>Pre-entreno siempre. Nunca en ayunas al gimnasio.</li>
+        <li>Zumo de naranja post-entreno en 30 min. Ventana crítica.</li>
+        <li>Leche con miel antes de dormir. 7 días. Sin excepción.</li>
+        <li>Café: con leche y azúcar. Nunca en ayunas. Máximo 2/día antes de las 15h.</li>
+        <li>Sin PUFAs. Mantequilla, aceite de coco, yema de huevo únicamente.</li>
+        <li>Gelatina o caldo en comida principal. Todos los días.</li>
+        <li>Magnesio glicinato 300mg antes de dormir.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head" onclick="tog(this)">
+      <span class="badge" style="background:#185FA5;color:#fff">WHOOP</span>
+      <span class="card-title">Decisiones según el Whoop</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-body">
+      <ul class="rules-list" style="padding:8px 14px 12px">
+        <li>Verde ≥67%: entrena al 100%. Marca números.</li>
+        <li>Amarillo 34-66%: sesión normal. Sin buscar récords.</li>
+        <li>Rojo 0-33%: reduce volumen 40% o solo movilidad y paseo.</li>
+        <li>HRV bajando 3 días consecutivos: reduce el volumen esa semana aunque el recovery parezca normal.</li>
+        <li>RHR +5 ppm sobre tu media: el cuerpo está luchando contra algo. No añadas carga.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-head" onclick="tog(this)">
+      <span class="badge" style="background:#1a1a18;color:#fff">META</span>
+      <span class="card-title">El objetivo — Por qué hacemos esto</span>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="card-body">
+      <ul class="rules-list" style="padding:8px 14px 12px">
+        <li>Físico compacto, fuerte, duro y explosivo. No de culturista.</li>
+        <li>Velada amateur en aproximadamente 12 meses.</li>
+        <li>Base de fuerza que potencie el striking y el grappling.</li>
+        <li>Metodología: Dr. Aldo Martínez + Boxing Science + Enfoque Peatiano.</li>
+        <li>Study the greats and become greater.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<script>
+function sw(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('p-' + id).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo(0, 0);
+}
+function tog(head) {
+  const body = head.nextElementSibling;
+  const open = body.classList.contains('open');
+  document.querySelectorAll('.card-body').forEach(b => b.classList.remove('open'));
+  document.querySelectorAll('.chevron').forEach(c => c.style.transform = '');
+  if (!open) {
+    body.classList.add('open');
+    head.querySelector('.chevron').style.transform = 'rotate(180deg)';
+  }
+}
+</script>
+</body>
+</html>
